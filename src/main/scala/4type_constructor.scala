@@ -125,6 +125,6 @@ object type_constructor {
    // try to force
    // f(s, repeat1(n-1, s, f))
 
-   //EXERCISE
+   //Continued in 7type_classes.scala
 
 }

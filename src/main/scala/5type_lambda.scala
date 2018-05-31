@@ -94,7 +94,7 @@ object type_lambda {
 
   def MapSized3[K]: Sized[({type MapK[V] = Map[K, V]})#MapK] = {
 
-    type MapK[A] = Map[K, A]
+    type MapK[X] = Map[K, X]
 
     new Sized[MapK] {
       def size[A](fa: MapK[A]): Int = fa.size
