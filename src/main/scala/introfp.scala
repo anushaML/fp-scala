@@ -5,8 +5,7 @@ object functions {
     /*
       domain and codomain
 
-      domain is type
-      codomain is set of values
+      types are sets of values
 
       every point in domain has to map to some value in codomain
       many to one is totality, but one to many means non-totality
@@ -139,9 +138,16 @@ object functions {
     def identity1[A](a: A): A = a
 
     // workaround 2
+
+    // trait and class so you can easily pass around
+    // ex: 
+    // def test(i: Identity)
+    // instead of 
+    // def test(i: identity.type)
+
     trait Identity {
 
-      def apply[A](a: A): A = a
+      def apply[A](a: A): A = a // parameteric polymorphism
 
     }
 
@@ -151,8 +157,6 @@ object functions {
     identity("foo") // "foo"
 
     identity1(1)
-
-
 
     trait First {
       def apply[A, B](t: (A, B)): A = t._1
@@ -168,6 +172,14 @@ object functions {
 
   }
 
+  // parameteric polymorphism is used a lot in scala 
+  // subtype polymorphism is not used much is scala
+
   // scalazzi -- subset of scala used in this class
   // https://github.com/scalaz/scalazzi
+
+  // 2 : Int
+  // : means member of 
+
+
 }
