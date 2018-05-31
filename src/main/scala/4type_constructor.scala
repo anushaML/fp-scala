@@ -104,9 +104,27 @@ object type_constructor {
     [[*, *] => *, * => *] => * // A[_[_, _] , _[_]]
 
     [((* => *) => *) => *, * => *] => *  // A[_[_[_[_]], _[_]]
-
   
    */
 
+   def prop1[A, B]: A => B = ??? // not true!
+
+
+
+   def padding = repeat(10, " ") // example
+
+   def repeat(n: Int, s: String): String =
+    if (n<=1) s else s + repeat(n-1, s)
+
+   def repeat0(n: Int, s: String): String = "john" //no clue what this function is about
+   //try changing to this, which is a little better
+   def repeat1[A](n: Int, s: A, f: (A, A) => A): A = {
+    if (n <= 1) s
+    else f(s, repeat1(n-1, s, f))
+   }
+   // try to force
+   // f(s, repeat1(n-1, s, f))
+
+   //EXERCISE
 
 }
