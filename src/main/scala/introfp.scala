@@ -11,6 +11,8 @@ object functions {
       every point in domain has to map to some value in codomain
       many to one is totality, but one to many means non-totality
 
+      can have unmapped values in the codomain but not the domain
+
      */
 
     def notTotal1(s: String): Int = s.toInt
@@ -54,6 +56,9 @@ object functions {
   }
  
   /*
+
+    ONE BENEFIT 
+
     all 3 give us equational reasoning 
     helps us understand fp easily 
 
@@ -72,5 +77,44 @@ object functions {
       = 2z^2
 
 
+    TWO BENEFIT
+
+    type based reasoning
+
   */
+
+  object functions {
+
+      //domain: set of all int values
+      //codomain: "
+      def sq (x: Int): Int = x * x
+
+
+  }
+
+  /*
+     Function that takes or returns a function or both
+
+     example "map" takes function
+
+     func.compose takes and returns function
+
+
+     Function combinatior = function that takes and returns function
+
+   */
+  object higher_order {
+
+    type Error = String
+
+    type Parser[A] = String => Either[Error, (String, A)]
+
+    def or[A](l: Parser[A], r: Parser[A]): Parser[A] = { (input: String) =>
+      l(input) match {
+        case Left(error) => r(input)
+        case v => v
+      }
+    }
+
+  }
 }
