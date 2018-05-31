@@ -73,13 +73,35 @@ object type_lambda {
   // Map : [*, *] => *
   // F: * => *
   // Therefore cannot do Sized[Map] !
-  def MapSized[K] = {
+  def MapSized1[K] = {
 
     type MapK[V] = Map[K, V]
 
-    val x = new Sized[MapK] {
+    new Sized[MapK] {
       def size[A](fa: MapK[A]): Int = fa.size
     }
+
   }
+  // doesn't work
+  //MapSized1[String].size[Int](Map("one" -> 1))
+
+  def MapSized2[V] = new Sized[Map[? , V]] {
+      def size[A](fa: Map[A, V]): Int = fa.size
+  }
+
+  MapSized2.size(Map("one" -> 1))
+
+
+  def MapSized3[K]: Sized[({type MapK[V] = Map[K, V]})#MapK] = {
+
+    type MapK[A] = Map[K, A]
+
+    new Sized[MapK] {
+      def size[A](fa: MapK[A]): Int = fa.size
+    }
+
+  }
+
+  MapSized3[String].size[Int](Map("one" -> 1))
 
 }
