@@ -87,7 +87,7 @@ object functions {
 
       //domain: set of all int values
       //codomain: "
-      def sq (x: Int): Int = x * x
+      def sq (x: Int): Int = x * x //monomorphic function
 
 
   }
@@ -99,11 +99,10 @@ object functions {
 
      func.compose takes and returns function
 
-
-     Function combinatior = function that takes and returns function
+     Function combinator = function that takes and returns function
 
    */
-  object higher_order {
+  object higher_order { 
 
     type Error = String
 
@@ -117,4 +116,58 @@ object functions {
     }
 
   }
+
+  /*
+    method doesn't know concrete type
+
+    scala doesn't support polymorphism functions, but does for methods
+
+    methods => def
+    functions => val f : Int => String
+
+    can pass functions around, not methods
+
+    if you pass a method to where a function is needed, you need to specify types; 
+    scala will then convert the methods to functions with the types
+  */
+  object polymorphism {
+
+    //cannot do
+    //val identity : A = ???
+
+    // workaround 1
+    def identity1[A](a: A): A = a
+
+    // workaround 2
+    trait Identity {
+
+      def apply[A](a: A): A = a
+
+    }
+
+    object identity extends Identity
+
+    identity(1) // 1
+    identity("foo") // "foo"
+
+    identity1(1)
+
+
+
+    trait First {
+      def apply[A, B](t: (A, B)): A = t._1
+    }
+
+    object first extends First
+
+    trait Second {
+      def apply[A, B](t: (A, B)): B = t._2
+    }
+
+    object second extends Second
+
+  }
+
+  // scalazzi -- subset of scala used in this class
+  // https://github.com/scalaz/scalazzi
 }
