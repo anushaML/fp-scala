@@ -52,4 +52,25 @@ object functions {
 
 
   }
+ 
+  /*
+    all 3 give us equational reasoning 
+    helps us understand fp easily 
+
+    F(x) = x^2
+    y = F(z)
+    w = y + y
+
+    fp , the one before = is just a name to one on right
+    procedural programming, it's copying bits, not just naming
+
+
+    this allows for "dumb" substitution
+    w = y + y
+      = F(z) + F(z)
+      = z^2 + z^2
+      = 2z^2
+
+
+  */
 }
