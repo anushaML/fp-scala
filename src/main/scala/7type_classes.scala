@@ -97,10 +97,13 @@ object type_classes {
 
   // scala implicitly uses <> as Semigroup syntax 
   implicit class SemigroupSyntax[A](l: A) {
+    //extension methods
     def <> (r: A)(implicit S: Semigroup[A]): A = S.append(l, r)
 
     def append(r: A)(implicit S: Semigroup[A]): A = S.append(l, r)
   }
+
+
 
   def repeat3[A: Semigroup](n: Int, a: A): A = {
     if (n <= 1) a
@@ -137,8 +140,84 @@ object type_classes {
     println(Map("A" -> 1, "B" -> 2) <> Map("C" -> 3, "A" -> 4, "B" -> 3))
 
 
+    trait Monoid[A] extends Semigroup[A] {
+      // Must satify: 
+      // Left Zero: append (zero, a) == a
+      // Right Zero: append (a, zero) == a
 
-  // Tomorrow
-  // How to define the classes as kindered types
+      def zero: A
+    }
+
+    object Monoid {
+      def apply[A](implicit M: Monoid[A]): Monoid[A] = M
+
+      implicit val MonoidInt: Monoid[Int] = new Monoid[Int] {
+        def append(l: Int, r: Int): Int = l <> r
+
+        val zero: Int = 0
+      }
+
+
+      def zero[A: Monoid]: A = Monoid[A].zero
+
+      zero[Int]
+    }
+
+    //  *************** Eq ***************
+    // Functor 
+
+    /*
+      Option, List and Future are functors
+
+
+      but Set is not because if map results in 2 of same values, then one would disappear...
+      so the structure doesn't remain the same
+    */
+
+
+    object functor {
+
+      /**
+       * Identity Law    : fmap(identity)(fa) === fa
+       * Composition Law : fmap(f)(fmap(g)(fa)) === fmap(f.compose(g))(fa)
+       */
+      trait Functor[F[_]] {
+        def fmap[A, B](f: A => B): F[A] => F[B]
+      }
+      object Functor {
+        def apply[F[_]: Functor]: Functor[F] = implicitly[Functor[F]]
+
+        implicit val OptionFunctor = new Functor[Option] {
+          def fmap[A, B](f: A => B): Option[A] => Option[B] =
+            (o: Option[A]) => o.map(f)
+        }
+        implicit val ListFunctor = new Functor[List] {
+          def fmap[A, B](f: A => B): List[A] => List[B] =
+            (l: List[A]) => l.map(f)
+        }
+
+        type Function[A, B] = A => B
+
+        implicit def FunctionFuctor[A]: Functor[Function[A, ?]] = new Functor[Function[A, ?]] {
+          def fmap[B, C](f: B => C): (A => B) => (A => C) = (g: (A => B)) => f.compose(g)
+          // Also works
+          // def fmap[B, C](f: B => C): Function[A, B] => Function[A, C] = (g: Function[A, B]) => f.compose(g)
+        }
+
+      }
+      implicit class FunctorSyntax[F[_], A](fa: F[A]) {
+        def fmap[B](f: A => B)(implicit F: Functor[F]): F[B] = F.fmap(f)(fa)
+      }
+      Functor[List].fmap[Int, String](_.toString)(List(1, 2, 3))
+
+      List(1, 2, 3).fmap(_.toString)
+
+
+      // functors have excellent composition values
+      case class Compose[F[_], G[_], A](fga: F[G[A]]) // if F and G are funtors then F[G[A]] is too
+      case class Product[F[_], G[_], A](l: F[A], r: G[A]) // same
+      case class Coproduct[F[_], G[_], A](e: Either[F[A], G[A]]) // both are funtcors
+
+    }
 
 }}
