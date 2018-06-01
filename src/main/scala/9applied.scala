@@ -12,7 +12,7 @@ object applied {
       def flatMap[B](f: A => IO[B]): IO[B] = 
         // IO((_ : Unit) => f(unsafePerformIO()).unsafePerformIO())
        IO(f(unsafePerformIO()).unsafePerformIO) //claimed to not work, if not working, use line above
-       
+
 
     }
     object IO {
@@ -79,19 +79,58 @@ object applied {
         _      <- either.fold(printContinue, maybeContinue)
       } yield ()
 
-    }
+  }
 
 
-    val program: IO[Unit] = 
-      for {
-        _    <- println("What is your name?")
-        name <- readLine
-        _    <- println(s"I am $name")
-        player = Player(name)
-        state = State(player)
-        _     <- mainLoop(state)
-      } yield ()
+  val program: IO[Unit] = 
+    for {
+      _    <- println("What is your name?")
+      name <- readLine
+      _    <- println(s"I am $name")
+      player = Player(name)
+      state = State(player)
+      _     <- mainLoop(state)
+    } yield ()
 
-   def main(args: Array[String]): Unit = program.unsafePerformIO() // only non-fp
+
+// to gain back testability
+ // trait Console[F[_]] {
+ //    def println(line: String): F[Unit]
+ //    def readLine: F[String]
+ // }
+
+ // object Console {
+
+ //    def apply[F[_]](implicit F: Console[F]): Console[F] = F
+
+
+ //    implicit val ConsoleIO: Console[IO] = new Console[IO] {
+ //        def println(s: String): IO[Unit] = IO.point(scala.Predef.println(s))
+
+ //        val readLine: IO[String] = IO.point(scala.io.StdIn.readLine())
+ //    }
+ //}
+
+ // added monad syntax and monad io
+
+
+ //testable
+ //abstracted out
+ sealed trait LogLevel
+
+ trait Log[F[_]] {
+  def log(level: LogLevel, line: => String): F[Unit]
+ }
+
+ // fake Console and fake console monad
+ // already implemented monad = State monad
+
+
+ // people mentioned "final tagless"
+
+ // applicative can be used in a lot a cases instead of shapeless
+
+
+ def main(args: Array[String]): Unit = program.unsafePerformIO() // only non-fp
 
 }
