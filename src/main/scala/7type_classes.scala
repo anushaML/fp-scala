@@ -60,6 +60,18 @@ object type_classes {
       }
     }
 
+    // another way to define same thing above
+    // implicit def MapSemigroup2[K, V: Semigroup ]: Semigroup[Map[K, V]] = {
+
+    //   new Semigroup[Map[K, V]] {
+    //     def append(m1: Map[K, V], m2: Map[K, V]): Map[K, V] = {
+    //       m1.foldLeft(m2) {
+    //         case (m, (k, v)) => m + (k -> m.get(k).map(_ <> v).getOrElse(v))
+    //       }
+    //     }
+    //   }
+    // }
+
   }
 
   def repeat1[A](n: Int, a: A)(implicit S: Semigroup[A]): A = {
