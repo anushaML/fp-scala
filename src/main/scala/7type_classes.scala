@@ -1,6 +1,6 @@
 object type_classes {
 
-  def main(args: Array[String]): Unit = {
+  // def main(args: Array[String]): Unit = {
 
   // polymorphic types are way of getting rid of structure
   // 2 reasons why write polymorphic code: reuse code and more chances of getting things right
@@ -220,4 +220,14 @@ object type_classes {
 
     }
 
-}}
+    println(Map("A" -> 1, "B" -> 2, "C" -> 2).map(_.toString))
+
+    //F[A] is a recipe that will produce 0 or more A
+
+    // ****************** Monad ***************
+    // IdentityMonad
+
+    // Can't batch api calls with Monad. Can with Apply (ap)
+    // Monads are powerful, but can't batch/parallelize api calls with flatMap
+
+} //}
