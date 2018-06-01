@@ -1,5 +1,7 @@
 object type_classes {
 
+  def main(args: Array[String]): Unit = {
+
   // polymorphic types are way of getting rid of structure
   // 2 reasons why write polymorphic code: reuse code and more chances of getting things right
 
@@ -41,6 +43,23 @@ object type_classes {
       def append(l: String, r: String): String = l + r
     }
 
+    implicit def ListSemigroup[A](implicit A: Semigroup[A]): Semigroup[List[A]] = {
+      new Semigroup[List[A]] {
+        def append(l: List[A], r: List[A]): List[A] = l ++ r
+      }
+    }
+
+    implicit def MapSemigroup[K, V](implicit V: Semigroup[V]): Semigroup[Map[K, V]] = {
+
+      new Semigroup[Map[K, V]] {
+        def append(m1: Map[K, V], m2: Map[K, V]): Map[K, V] = {
+          m1.foldLeft(m2) {
+            case (m, (k, v)) => m + (k -> m.get(k).map(V.append(_, v)).getOrElse(v))
+          }
+        }
+      }
+    }
+
   }
 
   def repeat1[A](n: Int, a: A)(implicit S: Semigroup[A]): A = {
@@ -59,6 +78,8 @@ object type_classes {
 
   repeat2(5, 1)
   repeat2(5, (1, 4))
+
+//  repeat(List(1, 2), List(3, 4))
 
 
 
@@ -94,6 +115,18 @@ object type_classes {
   // List concat
   // Map ..? have to make it Associative
 
+    println(repeat1(5, (1, 4)))
+
+    println((("A", "B"), "C") <> (("C", "B"), "A"))
+
+    println(List("A", "B", "C") <> List("C", "B", "A"))
+
+    println(Map("A" -> 1, "B" -> 2, "C" -> 2) <> Map("C" -> 3, "A" -> 4))
+    println(Map("A" -> 1, "B" -> 2) <> Map("C" -> 3, "A" -> 4, "B" -> 3))
+
+
+
+  // Tomorrow
   // How to define the classes as kindered types
 
-}
+}}
